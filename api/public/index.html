@@ -681,12 +681,38 @@
       'BOSS': { profile: '高压控制型，边界侵入风险高。', love: '以管理替代陪伴，关系压迫感强。', pros: ['目标执行强'], risks: ['自由受限', '关系失衡'], tips: ['立刻做边界重建', '关系中回到平等协商'], best: ['暂无推荐'], worst: ['LOVER','CTRL'] },
     };
     const PERSON_TYPES = Object.keys(PERSONALITY_DB);
+    const DIMENSION_ORDER = ['S','E','A','R','C','F','M','L','X','D'];
     const MATCH_WEIGHTS = { E: 1.5, R: 1.5, F: 1.3, C: 1.2, D: 1.2, S: 1.0, A: 1.0, M: 1.0, L: 1.0, X: 1.0 };
     const CHEMISTRY_RULES = [
       ['ATM-er', 'LOVER', 15], ['MUM', 'SOLO', 12], ['JOKE-R', 'MALO', 10], ['THAN-K', 'OJBK', 10],
       ['ATM-er', 'MUM', 10], ['LOVER', 'SEXY', 10], ['MALO', 'DIORS', 8], ['JOKE-R', 'OJBK', 8],
       ['CTRL', 'LOVER', -10], ['BOSS', 'LOVER', -20], ['SHIT', 'ANY', -25], ['FAKE', 'ANY', -20],
       ['DEAD', 'LOVER', -15], ['MONK', 'LOVER', -15], ['WOC', 'WOC', -20], ['IMSB', 'ANY', -15], ['BOSS', 'CTRL', -20]
+    ];
+    const PERSON_RULES = [
+      { code: 'SHIT', conditions: { A: 'L', F: 'L', X: '≤M' } },
+      { code: 'DEAD', conditions: { E: 'L', F: 'L', R: 'L' } },
+      { code: 'FAKE', conditions: { S: 'M', E: 'L', X: 'H' } },
+      { code: 'BOSS', conditions: { C: 'H', M: 'H', D: 'L' } },
+      { code: 'CTRL', conditions: { C: 'H', M: 'H', F: '≤M' } },
+      { code: 'SOLO', conditions: { D: 'H', E: '≤M', X: '≤M' } },
+      { code: 'MONK', conditions: { F: 'H', E: 'L', C: 'L' } },
+      { code: 'ATM-er', conditions: { E: 'H', R: 'H', M: 'H', C: '≤M' } },
+      { code: 'LOVER', conditions: { E: 'H', D: 'H', F: '≤M' } },
+      { code: 'MUM', conditions: { R: 'H', F: 'H', E: '≥M' } },
+      { code: 'MALO', conditions: { L: 'H', X: 'H', M: '≤M' } },
+      { code: 'THIN-K', conditions: { A: 'H', F: 'H', X: '≤M' } },
+      { code: 'NSDD', conditions: { M: 'L', L: 'H' } },
+      { code: 'NTR', conditions: { E: '≥M', F: 'M', D: '≥M' } },
+      { code: 'GOGO', conditions: { E: 'L', X: '≥M', C: 'L' } },
+      { code: 'WOC', conditions: { F: 'L', E: '≥M' } },
+      { code: 'WEAK', conditions: { D: 'H', F: 'L', S: '≥M' } },
+      { code: 'IMSB', conditions: { A: 'H', C: 'H', X: 'H' } },
+      { code: 'SEXY', conditions: { X: 'H', E: 'H', S: 'H' } },
+      { code: 'OJBK', conditions: { F: 'H', C: '≤M', D: '≤M' } },
+      { code: 'THAN-K', conditions: { R: 'H', E: '≥M', M: '≥M' } },
+      { code: 'JOKE-R', conditions: { X: 'H', L: 'H', F: 'M' } },
+      { code: 'DIORS', conditions: { M: '≤M', S: '≤M', L: 'H' } },
     ];
 
     let currentPage = 'landing';
@@ -790,6 +816,86 @@
       };
     }
 
+    function calculateLocalDims() {
+      const dims = { S: 0, E: 0, A: 0, R: 0, C: 0, F: 0, M: 0, L: 0, X: 0, D: 0 };
+      for (let i = 0; i < 50; i++) {
+        const qid = i + 1;
+        const dim = DIMENSION_ORDER[Math.floor(i / 5)];
+        const ans = answers[i];
+        if (!ans) continue;
+        const normal = { A: 1, B: 2, C: 3 };
+        const reverse = { A: 3, B: 2, C: 1 };
+        const score = qid >= 46 ? reverse[ans] : normal[ans];
+        dims[dim] += Number(score || 0);
+      }
+      return dims;
+    }
+
+    function toLevels(dims) {
+      const levels = {};
+      DIMENSION_ORDER.forEach((d) => { levels[d] = toLevel(Number(dims[d] || 0)); });
+      return levels;
+    }
+
+    function matchExpected(actual, expected) {
+      if (expected === actual) return true;
+      if (expected === '≤M') return actual === 'L' || actual === 'M';
+      if (expected === '≥M') return actual === 'M' || actual === 'H';
+      if (expected === '<M') return actual === 'L';
+      if (expected === '>M') return actual === 'H';
+      return false;
+    }
+
+    function determineLocalPersonType(dims) {
+      const levels = toLevels(dims);
+      for (const rule of PERSON_RULES) {
+        let ok = true;
+        const conds = rule.conditions || {};
+        for (const key of Object.keys(conds)) {
+          if (!matchExpected(levels[key], conds[key])) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) return rule.code;
+      }
+      if (levels.R === 'H' && levels.F === 'H') return 'THAN-K';
+      if (levels.X === 'H' && levels.L === 'H') return 'MALO';
+      return 'DIORS';
+    }
+
+    function deriveLocalGrade(dims) {
+      const levels = toLevels(dims);
+      const core = [levels.E, levels.R, levels.F];
+      const highCount = core.filter(x => x === 'H').length;
+      const lowCount = core.filter(x => x === 'L').length;
+      if (highCount === 3) return 'S';
+      if (highCount === 2) return 'A';
+      if (highCount === 1) return 'B';
+      if (lowCount >= 2) return 'D';
+      return 'C';
+    }
+
+    function buildLocalQuizResult() {
+      const dims = calculateLocalDims();
+      const type = determineLocalPersonType(dims);
+      const grade = deriveLocalGrade(dims);
+      const detail = personalityAnalysis(type);
+      const tags = (detail.pros || []).slice(0, 2);
+      return {
+        code: 200,
+        message: 'success',
+        data: {
+          result_id: Date.now(),
+          person_type: type,
+          grade,
+          short_desc: detail.profile || '已生成结果',
+          tags: tags.length ? tags : ['真实系', '可成长'],
+          dims
+        }
+      };
+    }
+
     async function submitQuiz() {
       const answered = answers.filter(Boolean).length;
       if (!allAnswered()) {
@@ -806,11 +912,8 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(buildPayload())
         });
-        const data = await res.json();
-        if (!res.ok) {
-          document.getElementById('loadingText').textContent = `提交失败：${data.message || res.status}`;
-          return;
-        }
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.data) throw new Error(`api_${res.status}`);
 
         latestResult = data;
         const rid = data?.data?.result_id;
@@ -823,7 +926,10 @@
         renderResult(data);
         goTo('result');
       } catch (e) {
-        document.getElementById('loadingText').textContent = `请求异常：${e.message}`;
+        const data = buildLocalQuizResult();
+        latestResult = data;
+        renderResult(data);
+        goTo('result');
       }
     }
 
