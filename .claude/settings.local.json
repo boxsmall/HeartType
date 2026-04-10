@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:3001/health)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3001\")",
+      "Bash(taskkill //F //PID 30420)",
+      "Bash(npm run:*)",
+      "Bash(powershell -Command \"Invoke-RestMethod -Uri 'http://127.0.0.1:3001/health' -Method GET\")"
+    ]
+  }
+}

@@ -1,0 +1,1216 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HeartType 恋爱人格测试</title>
+  <style>
+    :root {
+      --heart-pink: #ff6b9d;
+      --sweet-pink: #ffb8d0;
+      --romantic-purple: #9b59b6;
+      --milk: #fff9f5;
+      --soft-gray: #f5f0ed;
+      --deep-gray: #2c3e50;
+      --light-gray: #7f8c8d;
+      --ok: #27ae60;
+      --warn: #f39c12;
+      --bad: #e74c3c;
+      --radius-card: 16px;
+      --radius-btn: 24px;
+      --shadow: 0 4px 20px rgba(255, 107, 157, 0.2);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--deep-gray);
+      background: linear-gradient(180deg, #fff9f5 0%, #ffecf5 100%);
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    .container {
+      width: min(100%, 1100px);
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+      background: rgba(255, 249, 245, 0.9);
+      border-bottom: 1px solid #f3dde8;
+    }
+
+    .topbar-inner {
+      width: min(100%, 1100px);
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      font-family: "Montserrat", "Noto Sans SC", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--heart-pink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav button {
+      min-height: 44px;
+      border: 1px solid #ecd9e4;
+      background: #fff;
+      color: var(--deep-gray);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all .2s ease;
+    }
+
+    .nav button.active {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+      box-shadow: var(--shadow);
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn .4s ease;
+    }
+
+    .page.active { display: block; }
+
+    .hero {
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.35), transparent 40%),
+        radial-gradient(circle at 80% 0%, rgba(255,255,255,.28), transparent 34%),
+        linear-gradient(135deg, #ff6b9d 0%, #ff8fab 52%, #9b59b6 100%);
+      color: #fff;
+      padding: 36px 28px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 36px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    p { font-size: 15px; line-height: 1.6; }
+
+    .muted { color: var(--light-gray); font-size: 13px; }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      min-height: 44px;
+      border-radius: var(--radius-btn);
+      padding: 12px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+    }
+
+    .btn-secondary {
+      color: var(--heart-pink);
+      background: #fff;
+      border-color: var(--heart-pink);
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      background: #fff;
+      border: 1px solid #f0dbe7;
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .feature {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #f0dbe7;
+      text-align: center;
+      padding: 20px 14px;
+      min-height: 120px;
+    }
+
+    .feature .icon { font-size: 28px; margin-bottom: 8px; }
+
+    .quote {
+      border-left: 3px solid var(--sweet-pink);
+      padding-left: 12px;
+      font-size: 14px;
+      color: #5d5560;
+    }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .progress {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--soft-gray);
+      overflow: hidden;
+    }
+
+    .progress > div {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b9d 0%, #ff8fab 100%);
+      transition: width .3s ease;
+    }
+
+    .question {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.35;
+      margin: 20px 0;
+    }
+
+    .option {
+      width: 100%;
+      background: #fff;
+      border: 2px solid #e8e0dc;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all .2s ease;
+      min-height: 60px;
+    }
+
+    .option:hover {
+      border-color: var(--heart-pink);
+      background: var(--milk);
+    }
+
+    .option.selected {
+      color: #fff;
+      border-color: var(--heart-pink);
+      background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+    }
+
+    .loading-core {
+      text-align: center;
+      padding: 28px;
+    }
+
+    .heart {
+      font-size: 56px;
+      display: inline-block;
+      animation: heartbeat 1.2s infinite;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .grade-s { background: linear-gradient(135deg, #ffd700, #ffa500); }
+    .grade-a { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+    .grade-b { background: linear-gradient(135deg, #3498db, #5dade2); }
+    .grade-c { background: linear-gradient(135deg, #f39c12, #f5b041); }
+    .grade-d { background: linear-gradient(135deg, #e74c3c, #ec7063); }
+
+    .tag {
+      display: inline-block;
+      border-radius: 12px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .tag.pro { background: #e8f8f5; color: #27ae60; }
+    .tag.con { background: #fdf2e9; color: #e67e22; }
+    .tag.tip { background: #ebf5fb; color: #3498db; }
+
+    .analysis-list { margin: 0; padding-left: 18px; }
+    .analysis-list li { margin: 6px 0; font-size: 14px; line-height: 1.6; }
+    .dim-item {
+      border: 1px solid #f0dbe7;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .dim-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .badge {
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: #9b59b6;
+    }
+    .detail-doc {
+      border: 1px solid #ecd8e4;
+      border-radius: 12px;
+      background: #fffdfa;
+      padding: 12px;
+      white-space: pre-wrap;
+      line-height: 1.65;
+      font-size: 14px;
+      max-height: 320px;
+      overflow: auto;
+    }
+    .result-layout {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .result-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .result-section-title {
+      margin: 14px 0 8px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .result-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      max-height: 260px;
+      overflow: auto;
+      background: #fff;
+      border: 1px dashed #e3cddb;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .input {
+      width: 100%;
+      border: 2px solid #e8e0dc;
+      border-radius: 12px;
+      min-height: 44px;
+      padding: 10px 12px;
+      font-size: 15px;
+      color: var(--deep-gray);
+      background: #fff;
+    }
+
+    .poster {
+      border-radius: 16px;
+      border: 1px solid #eed9e6;
+      background: linear-gradient(135deg, #fff 0%, #ffeaf3 65%, #f6e8ff 100%);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .rank-item {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid #efdfeb;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .rank-no {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      background: #f8eff4;
+      color: #7f5f74;
+    }
+
+    .rank-item.top .rank-no { background: linear-gradient(135deg, #ffd700, #ffb347); color: #fff; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .container { padding: 24px 48px; }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 24px; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .result-layout { grid-template-columns: 1fr; }
+      .question { font-size: 22px; }
+      h1 { font-size: 30px; }
+      h2 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">🏆 HeartType</div>
+      <nav class="nav" id="nav"></nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page active" id="landing">
+      <div class="hero">
+        <h1>测测你的恋爱人格</h1>
+        <p>50题 · 10维度 · 24人格，快速得到你的恋爱画像和匹配建议。</p>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="goTo('quiz')">开始测试</button>
+          <button class="btn btn-secondary" onclick="goTo('leaderboard')">排行榜</button>
+        </div>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="feature"><div class="icon">💕</div><b>快速准确</b><p class="muted">50题完成核心画像</p></div>
+        <div class="feature"><div class="icon">🎯</div><b>趣味性强</b><p class="muted">人格标签易分享</p></div>
+        <div class="feature"><div class="icon">📊</div><b>维度分析</b><p class="muted">10维度结构化结果</p></div>
+        <div class="feature"><div class="icon">🔗</div><b>匹配计算</b><p class="muted">结果可直接做匹配</p></div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card quote">“测完我和对象的匹配分，讨论了半小时，意外地有帮助。”</div>
+        <div class="card quote">“视觉很心动，截图分享到群里，朋友都去测了。”</div>
+        <div class="card quote">“作为关系话题的开场工具很顺手。”</div>
+      </div>
+    </section>
+
+    <section class="page" id="leaderboard">
+      <div class="card">
+        <h2>恋爱人格热度排行榜</h2>
+        <p class="muted">演示榜单（可后续接 `/api/v1/stats/leaderboard`）</p>
+        <div class="grid" id="rankList"></div>
+        <div class="btn-row" style="justify-content:flex-start; margin-top:16px;">
+          <button class="btn btn-primary" onclick="goTo('quiz')">去测试</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="quiz">
+      <div class="card">
+        <div class="quiz-top">
+          <button class="btn btn-secondary" onclick="goTo('landing')">返回首页</button>
+          <div id="quizCount" class="muted">1/50</div>
+          <button class="btn btn-secondary" onclick="skipQuestion()">跳过</button>
+        </div>
+        <div class="progress"><div id="quizProgress" style="width:2%;"></div></div>
+
+        <div class="question" id="quizQuestion"></div>
+
+        <div>
+          <button class="option" id="optA" onclick="pick('A')">A. 偏低倾向（更保守/更克制）</button>
+          <button class="option" id="optB" onclick="pick('B')">B. 中间倾向（看情况）</button>
+          <button class="option" id="optC" onclick="pick('C')">C. 偏高倾向（更主动/更明显）</button>
+        </div>
+
+        <div class="btn-row" style="justify-content:flex-start; margin-top:16px;">
+          <button class="btn btn-secondary" onclick="prevQuestion()">上一题</button>
+          <button class="btn btn-primary" onclick="nextQuestion()">下一题</button>
+          <button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()" disabled>提交测试</button>
+          <button class="btn btn-secondary" onclick="fillRandom()">随机填充剩余</button>
+        </div>
+        <p class="muted" id="quizStatus"></p>
+      </div>
+    </section>
+
+    <section class="page" id="loading">
+      <div class="card loading-core">
+        <h2>正在分析你的恋爱人格...</h2>
+        <div class="heart">💗</div>
+        <p class="muted" id="loadingText">维度计算中...</p>
+        <div class="progress"><div id="loadingProgress" style="width:0%;"></div></div>
+      </div>
+    </section>
+
+    <section class="page" id="result">
+      <div class="card">
+        <h2 style="margin-bottom:10px;">测试结果</h2>
+        <div class="result-head">
+          <span id="gradePill" class="pill grade-s">S</span>
+          <div>
+            <h3 id="resultType" style="margin:0;">--</h3>
+            <p id="resultDesc" class="muted" style="margin:4px 0 0;">--</p>
+          </div>
+        </div>
+        <div id="tags"></div>
+
+        <div class="result-layout">
+          <div class="card" style="padding:16px;">
+            <h3 style="margin:0;">人格类型详解</h3>
+            <div id="personalityFull"></div>
+          </div>
+          <div class="card" style="padding:16px;">
+            <h3 style="margin:0;">分维度分析</h3>
+            <div id="dimsBox"></div>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-secondary" onclick="goTo('quiz')">重新测试</button>
+          <button class="btn btn-primary" onclick="toMatch()">开始匹配</button>
+          <button class="btn btn-secondary" onclick="goTo('share')">去分享</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="match">
+      <div class="card">
+        <div class="quiz-top">
+          <button class="btn btn-secondary" onclick="goTo('result')">返回结果</button>
+          <div class="muted">双人匹配</div>
+          <button class="btn btn-secondary" onclick="goTo('share')">去分享</button>
+        </div>
+        <h2>关系匹配分析</h2>
+        <p class="muted">你的结果自动使用本次测试结果，Ta 的人格类型可直接下拉选择。</p>
+        <div class="grid grid-2">
+          <div class="card" style="padding:16px;">
+            <h3 style="margin-bottom:6px;">👤 你</h3>
+            <p class="muted" id="matchTypeA">--</p>
+            <p class="muted" id="matchAIdText">已自动填入本次测试结果</p>
+          </div>
+          <div class="card" style="padding:16px;">
+            <h3 style="margin-bottom:6px;">👤 Ta</h3>
+            <p class="muted" id="matchTypeB">请选择 Ta 的人格类型</p>
+            <select class="input" id="matchPartnerType" onchange="onPartnerSelected()">
+              <option value="">请选择 Ta 的人格类型</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row" style="justify-content:flex-start;">
+          <button class="btn btn-primary" onclick="calculateMatch()">开始匹配</button>
+        </div>
+        <p class="muted" id="matchStatus"></p>
+        <div id="matchSummary"></div>
+      </div>
+    </section>
+
+    <section class="page" id="share">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>分享页</h2>
+          <p class="muted">可截图分享的结果卡片（演示版）</p>
+          <div class="poster" id="poster"></div>
+        </div>
+        <div class="card">
+          <h3>分享到</h3>
+          <div class="btn-row" style="justify-content:flex-start;">
+            <button class="btn btn-secondary">微信</button>
+            <button class="btn btn-secondary">朋友圈</button>
+            <button class="btn btn-secondary">微博</button>
+            <button class="btn btn-primary" onclick="copyShareText()">复制文案</button>
+          </div>
+          <p id="shareStatus" class="muted"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const pages = [
+      { id: 'landing', label: '首页', nav: true },
+      { id: 'leaderboard', label: '排行榜', nav: true },
+      { id: 'quiz', label: '测试页', nav: true },
+      { id: 'loading', label: '过渡页', nav: false },
+      { id: 'result', label: '结果页', nav: false },
+      { id: 'match', label: '匹配页', nav: false },
+      { id: 'share', label: '分享页', nav: false },
+    ];
+
+    const questionTexts = [
+      '你通常如何评价自己？','面对失败时，你会怎么想？','别人批评你时，你的反应是？','你对自己未来的规划是？','在社交场合中，你通常感觉？',
+      '恋爱中你会患得患失吗？','你会主动表达爱意吗？','你容易对一个人上头吗？','恋爱中你通常扮演什么角色？','你相信天长地久的爱情吗？',
+      '你觉得大多数人是？','你认为人生最重要的是？','你对规则的态度是？','你觉得世界是？','你相信努力能改变命运吗？',
+      '你理想的亲密关系是？','恋爱中你会依赖对方吗？','你能维持长期关系吗？','你更喜欢什么样的关系？','你愿意为关系付出多少？',
+      '你喜欢掌控局面吗？','失控会让你感到？','你会干涉伴侣的行为吗？','你希望关系按你的预期发展吗？','你喜欢被安排吗？',
+      '你的情绪波动大吗？','你容易被激怒吗？','情绪低落时你能快速调整吗？','你经常情绪低落吗？','你会在公众场合失控吗？',
+      '你的野心程度是？','你做事的动力来源是？','你喜欢竞争吗？','你会经常摆烂吗？','你愿意长期努力吗？',
+      '你更喜欢哪种生活？','你喜欢尝试新事物吗？','你的作息规律吗？','你容易沉迷娱乐吗？','你喜欢变化还是稳定？',
+      '你会主动认识新朋友吗？','你享受独处吗？','你容易融入新群体吗？','你的表达欲强吗？','你喜欢社交吗？',
+      '你需要他人支持吗？','你能一个人完成事情吗？','你害怕孤独吗？','你更喜欢怎么处理问题？','在关系中你需要陪伴吗？'
+    ];
+
+    const rankMock = [
+      ['ATM-er', 1820], ['LOVER', 2150], ['MUM', 1680], ['MALO', 1560], ['THAN-K', 1412],
+      ['SEXY', 1326], ['JOKE-R', 1284], ['OJBK', 1220], ['THIN-K', 1188], ['DIORS', 1066]
+    ];
+
+    const DIMENSION_META = {
+      S: { name: '自我认知', high: '自我稳定感较强，遇事更愿意主动承担。', mid: '自我评价较平衡，通常能理性看待自己。', low: '更容易自我怀疑，建议增加正向反馈循环。' },
+      E: { name: '情感表达', high: '情感表达积极主动，亲密感建立速度快。', mid: '表达较克制，关系推进更看情境。', low: '更偏保留，建议练习直接表达需求与感受。' },
+      A: { name: '价值观', high: '规则感与目标感较强，重长期与责任。', mid: '价值倾向灵活，能在现实中平衡。', low: '更看重即时体验，长期一致性是关键课题。' },
+      R: { name: '关系模式', high: '对关系投入度高，重承诺和连结。', mid: '关系边界与亲密需求较均衡。', low: '更强调独立与空间，关系中需主动同步预期。' },
+      C: { name: '控制欲', high: '希望掌控节奏，容易主导关系决策。', mid: '会在关键点主导，但可协商。', low: '更倾向顺其自然，冲突压迫感较低。' },
+      F: { name: '情绪稳定', high: '情绪调节能力较好，关系中更稳。', mid: '整体可控，压力期会有波动。', low: '情绪起伏较明显，建议建立情绪复盘机制。' },
+      M: { name: '成就动机', high: '成长驱动强，关注长期结果。', mid: '能按目标推进，但节奏相对温和。', low: '动力更依赖外界情境，需要外部结构支持。' },
+      L: { name: '生活方式', high: '偏变化与探索，关系新鲜感需求更高。', mid: '稳定与变化都可接受。', low: '偏稳定节奏，关系安全感来自可预期。' },
+      X: { name: '社交能力', high: '社交主动性强，关系链接资源多。', mid: '按场景社交，节奏稳妥。', low: '更偏内向深交，关系经营重质量。' },
+      D: { name: '依赖程度', high: '亲密依赖需求更高，更需要被回应。', mid: '可独立也可亲密，依赖水平适中。', low: '独立性强，边界感更明确。' },
+    };
+
+    const PERSONALITY_DB = {
+      'ATM-er': { profile: '资源投入型，安全感供给能力突出。', love: '偏务实表达爱意，更愿意通过行动与投入证明关系。', pros: ['稳定投入强', '责任感与可靠性较高'], risks: ['浪漫表达可能不足', '容易被理解为功利表达'], tips: ['补充情绪沟通', '明确金钱与亲密边界'], best: ['LOVER','MUM'], worst: ['BOSS','FAKE'] },
+      'LOVER': { profile: '高情感浓度型，偏爱感很强。', love: '高频表达、强关注、强回应，关系温度高。', pros: ['情绪价值高', '亲密推进快'], risks: ['依赖感可能过强', '边界模糊易内耗'], tips: ['保留个人空间', '建立独立生活支点'], best: ['ATM-er','SEXY'], worst: ['MONK','DEAD'] },
+      'MUM': { profile: '治愈兜底型，稳定包容。', love: '擅长接住伴侣情绪，关系中提供长期安全感。', pros: ['情绪稳定', '照顾能力强'], risks: ['易过度照顾', '关系刺激感不足'], tips: ['避免单向照料', '建立双向表达机制'], best: ['SOLO','ATM-er'], worst: ['SHIT','BOSS'] },
+      'MALO': { profile: '快乐共振型，轻松相处。', love: '强调一起玩、一起体验，互动自然。', pros: ['相处轻松', '共同体验感强'], risks: ['长期规划弱', '目标一致性不足'], tips: ['补充未来规划', '保持节奏与责任'], best: ['JOKE-R','DIORS'], worst: ['BOSS','IMSB'] },
+      'JOKE-R': { profile: '氛围驱动型，幽默感强。', love: '擅长用轻松方式化解关系压力。', pros: ['关系降压能力强', '日常互动积极'], risks: ['严肃议题可能回避', '稳定表达波动'], tips: ['关键话题要落地', '避免用玩笑替代沟通'], best: ['MALO','OJBK'], worst: ['THIN-K','BOSS'] },
+      'DIORS': { profile: '真实接地气型，反套路。', love: '偏实在和坦诚，相处成本低。', pros: ['真实不装', '关系压力小'], risks: ['精致感不足', '表达不够浪漫'], tips: ['增强仪式感', '保持真诚与体面并存'], best: ['MALO','THAN-K'], worst: ['SEXY','IMSB'] },
+      'SEXY': { profile: '魅力张力型，吸引力强。', love: '容易快速建立化学反应。', pros: ['吸引力高', '关系热度高'], risks: ['安全感议题突出', '外部诱因更多'], tips: ['明确排他边界', '稳定承诺表达'], best: ['LOVER','ATM-er'], worst: ['SOLO','BOSS'] },
+      'OJBK': { profile: '松弛自由型，压迫感低。', love: '重空间和尊重，控制感弱。', pros: ['边界友好', '冲突强度低'], risks: ['容易显得冷淡', '投入感被误读'], tips: ['主动反馈在乎', '关键节点别缺席'], best: ['THAN-K','JOKE-R'], worst: ['LOVER','SOLO'] },
+      'THAN-K': { profile: '长期经营型，重回馈。', love: '关系里强调互相珍惜与可持续。', pros: ['稳定可靠', '复利型关系能力强'], risks: ['激情感偏弱', '节奏偏平'], tips: ['增加共同新鲜体验', '维持感性表达'], best: ['OJBK','THIN-K'], worst: ['NSDD','SHIT'] },
+      'THIN-K': { profile: '理性分析型，决策清晰。', love: '冲突中偏逻辑处理，情绪表达较克制。', pros: ['问题解决能力强', '风险判断稳'], risks: ['共情反馈不足', '浪漫感较弱'], tips: ['先共情后分析', '定期情感复盘'], best: ['THAN-K','MUM'], worst: ['JOKE-R','LOVER'] },
+      'NSDD': { profile: '当下体验型，轻规划。', love: '重即时快乐，弱长期结构。', pros: ['关系轻松', '压力小'], risks: ['未来不确定性高', '责任议题容易拖延'], tips: ['先设最低共同计划', '明确责任分工'], best: ['OJBK','MALO'], worst: ['THAN-K','BOSS'] },
+      'CTRL': { profile: '主导掌控型，节奏感强。', love: '倾向安排关系进程与关键决策。', pros: ['执行力强', '能提供方向'], risks: ['压迫感上升', '边界冲突'], tips: ['把控制改为协作', '先确认对方接受度'], best: ['THAN-K','DIORS'], worst: ['BOSS','LOVER'] },
+      'SOLO': { profile: '缺爱敏感型，防御与依赖并存。', love: '渴望亲密又怕受伤，反复确认在乎。', pros: ['深情投入潜力高', '关系忠诚度可高'], risks: ['不安全感高', '关系波动明显'], tips: ['建立稳定回应机制', '避免冷处理'], best: ['MUM','THAN-K'], worst: ['GOGO','DEAD'] },
+      'NTR': { profile: '高思虑内耗型，感知细腻。', love: '对细节很敏感，容易过度解读。', pros: ['观察细致', '在乎关系质量'], risks: ['内耗与焦虑', '误解积累'], tips: ['事实与情绪分离', '建立澄清流程'], best: ['MUM','THAN-K'], worst: ['GOGO','WOC'] },
+      'GAY/Les': { profile: '对撞张力型，火花强。', love: '互动强烈，爱与冲突并存。', pros: ['热度高', '互动不无聊'], risks: ['争执频繁', '稳定性不足'], tips: ['冲突规则先约定', '避免情绪升级'], best: ['JOKE-R','MALO'], worst: ['WOC','BOSS'] },
+      'MONK': { profile: '低波动低欲望型，极稳。', love: '稳定但表达少，关系温度偏低。', pros: ['情绪稳定', '低冲突'], risks: ['情感反馈不足', '伴侣体验感下降'], tips: ['增加正向表达频次', '主动制造连接时刻'], best: ['THIN-K','OJBK'], worst: ['LOVER','SEXY'] },
+      'GOGO': { profile: '失联回避型，回应不稳定。', love: '节奏忽冷忽热，安全感波动大。', pros: ['空间给得足', '独立性高'], risks: ['关系不确定高', '信任受损'], tips: ['约定回复规则', '关键节点必须在线'], best: ['OJBK'], worst: ['SOLO','LOVER'] },
+      'WOC': { profile: '冲动爆发型，情绪强。', love: '情绪来得快，冲突烈度偏高。', pros: ['表达直接', '关系热度高'], risks: ['争执升级快', '语言伤害风险'], tips: ['先降温再沟通', '设置冲突暂停词'], best: ['THIN-K'], worst: ['WOC','NTR'] },
+      'DEAD': { profile: '情感关闭型，低回应。', love: '关系中反馈稀缺，易形成单向投入。', pros: ['理性克制', '低纠缠'], risks: ['亲密断联', '情绪失衡'], tips: ['固定表达机制', '明确最小回应标准'], best: ['OJBK'], worst: ['LOVER','SOLO'] },
+      'WEAK': { profile: '高依赖脆弱型，需要持续托底。', love: '情绪受关系反馈影响明显。', pros: ['依恋深', '需要感强'], risks: ['自我恢复弱', '关系负担重'], tips: ['提升自我稳定能力', '减少单点依赖'], best: ['MUM'], worst: ['GOGO','BOSS'] },
+      'SHIT': { profile: '负向外溢型，关系消耗高。', love: '更易放大负面体验，拖累关系质量。', pros: ['对问题敏感'], risks: ['负能量扩散', '关系侵蚀'], tips: ['先做情绪修复再谈关系', '必要时寻求专业支持'], best: ['暂无推荐'], worst: ['全部类型'] },
+      'IMSB': { profile: '说教控制型，优越输出倾向。', love: '常以“教育”替代共情。', pros: ['认知框架强'], risks: ['平等感受损', '被评判感强'], tips: ['减少说教句式', '先理解后建议'], best: ['THIN-K'], worst: ['LOVER','MALO'] },
+      'FAKE': { profile: '防御伪装型，真实暴露少。', love: '关系里常保留核心情绪与意图。', pros: ['自我保护强'], risks: ['信任建立慢', '亲密深度受限'], tips: ['分层暴露真实感受', '建立低风险坦诚场景'], best: ['OJBK'], worst: ['SOLO','LOVER'] },
+      'BOSS': { profile: '高压控制型，边界侵入风险高。', love: '以管理替代陪伴，关系压迫感强。', pros: ['目标执行强'], risks: ['自由受限', '关系失衡'], tips: ['立刻做边界重建', '关系中回到平等协商'], best: ['暂无推荐'], worst: ['LOVER','CTRL'] },
+    };
+    const PERSON_TYPES = Object.keys(PERSONALITY_DB);
+    const MATCH_WEIGHTS = { E: 1.5, R: 1.5, F: 1.3, C: 1.2, D: 1.2, S: 1.0, A: 1.0, M: 1.0, L: 1.0, X: 1.0 };
+    const CHEMISTRY_RULES = [
+      ['ATM-er', 'LOVER', 15], ['MUM', 'SOLO', 12], ['JOKE-R', 'MALO', 10], ['THAN-K', 'OJBK', 10],
+      ['ATM-er', 'MUM', 10], ['LOVER', 'SEXY', 10], ['MALO', 'DIORS', 8], ['JOKE-R', 'OJBK', 8],
+      ['CTRL', 'LOVER', -10], ['BOSS', 'LOVER', -20], ['SHIT', 'ANY', -25], ['FAKE', 'ANY', -20],
+      ['DEAD', 'LOVER', -15], ['MONK', 'LOVER', -15], ['WOC', 'WOC', -20], ['IMSB', 'ANY', -15], ['BOSS', 'CTRL', -20]
+    ];
+
+    let currentPage = 'landing';
+    let currentQuestion = 0;
+    const answers = Array(50).fill(null);
+    const recentResultIds = [];
+    let latestResult = null;
+    let personalityDetailMarkdown = null;
+
+    function initNav() {
+      const nav = document.getElementById('nav');
+      nav.innerHTML = pages.filter(p => p.nav).map(p => `<button id="nav-${p.id}" onclick="goTo('${p.id}')">${p.label}</button>`).join('');
+      updateNav();
+    }
+
+    function updateNav() {
+      pages.forEach(p => {
+        const btn = document.getElementById(`nav-${p.id}`);
+        if (btn) btn.classList.toggle('active', p.id === currentPage);
+      });
+    }
+
+    function goTo(id) {
+      if ((id === 'result' || id === 'match' || id === 'share') && !latestResult?.data) {
+        currentPage = 'quiz';
+      } else {
+        currentPage = id;
+      }
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(currentPage);
+      if (target) target.classList.add('active');
+      updateNav();
+      if (currentPage === 'quiz') renderQuiz();
+      if (currentPage === 'leaderboard') renderRank();
+      if (currentPage === 'share') renderPoster();
+    }
+
+    function renderRank() {
+      const box = document.getElementById('rankList');
+      box.innerHTML = rankMock.map((item, idx) => `
+        <div class="rank-item ${idx < 3 ? 'top' : ''}">
+          <div class="rank-no">${idx + 1}</div>
+          <div><b>${item[0]}</b></div>
+          <div class="muted">${item[1]} 人</div>
+        </div>
+      `).join('');
+    }
+
+    function renderQuiz() {
+      const total = 50;
+      const n = currentQuestion + 1;
+      const answered = answers.filter(Boolean).length;
+      const remain = total - answered;
+      document.getElementById('quizCount').textContent = `${n}/${total}`;
+      document.getElementById('quizProgress').style.width = `${(n / total) * 100}%`;
+      document.getElementById('quizQuestion').textContent = `Q${n}. ${questionTexts[currentQuestion]}`;
+      const picked = answers[currentQuestion];
+      ['A','B','C'].forEach(key => {
+        document.getElementById(`opt${key}`).classList.toggle('selected', picked === key);
+      });
+      document.getElementById('quizStatus').textContent = `已作答 ${answered}/50，剩余 ${remain} 题。`;
+      const submitBtn = document.getElementById('submitBtn');
+      if (submitBtn) submitBtn.disabled = answered !== 50;
+    }
+
+    function pick(v) {
+      answers[currentQuestion] = v;
+      renderQuiz();
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < 49) currentQuestion += 1;
+      renderQuiz();
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) currentQuestion -= 1;
+      renderQuiz();
+    }
+
+    function skipQuestion() {
+      nextQuestion();
+    }
+
+    function fillRandom() {
+      for (let i = 0; i < 50; i++) {
+        if (!answers[i]) {
+          answers[i] = ['A','B','C'][Math.floor(Math.random() * 3)];
+        }
+      }
+      renderQuiz();
+    }
+
+    function allAnswered() {
+      return answers.every(Boolean);
+    }
+
+    function buildPayload() {
+      return {
+        answers: answers.map((answer, i) => ({ questionId: i + 1, answer }))
+      };
+    }
+
+    async function submitQuiz() {
+      const answered = answers.filter(Boolean).length;
+      if (!allAnswered()) {
+        document.getElementById('quizStatus').textContent = `必须完成全部 50 题后才能提交（当前 ${answered}/50）。`;
+        return;
+      }
+
+      goTo('loading');
+      await runLoading(1600);
+
+      try {
+        const res = await fetch('/api/v1/quiz/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(buildPayload())
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          document.getElementById('loadingText').textContent = `提交失败：${data.message || res.status}`;
+          return;
+        }
+
+        latestResult = data;
+        const rid = data?.data?.result_id;
+        if (rid) {
+          recentResultIds.push(rid);
+          if (recentResultIds.length > 10) recentResultIds.shift();
+          if (currentPage === 'match') populatePartnerSelect();
+        }
+
+        renderResult(data);
+        goTo('result');
+      } catch (e) {
+        document.getElementById('loadingText').textContent = `请求异常：${e.message}`;
+      }
+    }
+
+    function runLoading(durationMs) {
+      const bar = document.getElementById('loadingProgress');
+      const text = document.getElementById('loadingText');
+      const start = Date.now();
+      return new Promise(resolve => {
+        const timer = setInterval(() => {
+          const p = Math.min(100, Math.round(((Date.now() - start) / durationMs) * 100));
+          bar.style.width = `${p}%`;
+          text.textContent = p < 40 ? '维度计算中...' : p < 75 ? '人格判定中...' : '生成结果中...';
+          if (p >= 100) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 60);
+      });
+    }
+
+    function toLevel(score) {
+      if (score <= 8) return 'L';
+      if (score <= 11) return 'M';
+      return 'H';
+    }
+
+    function personalityAnalysis(type) {
+      return PERSONALITY_DB[type] || {
+        profile: '该类型画像正在完善中。',
+        love: '关系表现以当前维度组合为准。',
+        pros: ['具备可成长空间'],
+        risks: ['建议结合维度分析理解风险点'],
+        tips: ['先从沟通节奏和边界开始优化'],
+        best: ['--'],
+        worst: ['--'],
+      };
+    }
+
+    function escapeRegExp(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    async function getPersonalityDocSection(type) {
+      if (!personalityDetailMarkdown) {
+        const res = await fetch('/personality-details.md');
+        if (!res.ok) throw new Error('无法加载人格详解文档');
+        personalityDetailMarkdown = await res.text();
+      }
+
+      // 方案1：按二级标题精确切片（更稳定）
+      const text = personalityDetailMarkdown.replace(/\r\n/g, '\n');
+      const lines = text.split('\n');
+      const headingRe = /^##\s+\d+\.\s+(.+)$/;
+      const startIdx = lines.findIndex((line) => {
+        const m = line.match(headingRe);
+        if (!m) return false;
+        return m[1].startsWith(`${type}（`);
+      });
+
+      if (startIdx !== -1) {
+        let endIdx = lines.length;
+        for (let i = startIdx + 1; i < lines.length; i += 1) {
+          if (headingRe.test(lines[i])) {
+            endIdx = i;
+            break;
+          }
+        }
+        return lines.slice(startIdx, endIdx).join('\n').trim();
+      }
+
+      // 方案2：正则回退匹配
+      const typeRe = escapeRegExp(type);
+      const fallbackRe = new RegExp(`##\\s+\\d+\\.\\s+${typeRe}（[^\\n]*\\n([\\s\\S]*?)(?=\\n##\\s+\\d+\\.|\\n\\*文档版本|$)`);
+      const matched = text.match(fallbackRe);
+      if (matched) return matched[0].trim();
+
+      // 方案3：宽松匹配，至少给到用户可读内容
+      const looseStart = text.indexOf(type);
+      if (looseStart !== -1) {
+        const looseEnd = text.indexOf('\n## ', looseStart + 1);
+        return text.slice(looseStart, looseEnd === -1 ? text.length : looseEnd).trim();
+      }
+
+      return `未在《人格类型详解》中找到该类型章节（类型：${type}）。`;
+    }
+
+    function pickSectionText(section, title) {
+      const re = new RegExp(`###\\s+${escapeRegExp(title)}\\n([\\s\\S]*?)(?=\\n###\\s+|$)`);
+      const m = section.match(re);
+      return m ? m[1].trim() : '';
+    }
+
+    function linesToList(text) {
+      return text
+        .split('\n')
+        .map(x => x.trim())
+        .filter(x => x.startsWith('- '))
+        .map(x => x.slice(2));
+    }
+
+    async function renderMergedPersonalityDetail(type) {
+      const box = document.getElementById('personalityFull');
+      const base = personalityAnalysis(type);
+      try {
+        const section = await getPersonalityDocSection(type);
+        const deep = pickSectionText(section, '深度画像');
+        const love = pickSectionText(section, '恋爱表现');
+        const prosDoc = linesToList(pickSectionText(section, '优势分析').replace('### 优势', ''));
+        const riskDoc = linesToList(pickSectionText(section, '潜在风险').replace('### 缺点', ''));
+        const fitDoc = linesToList(pickSectionText(section, '适合的TA'));
+        const guideDoc = linesToList(pickSectionText(section, '相处指南'));
+
+        const pros = prosDoc.length ? prosDoc : base.pros;
+        const risks = riskDoc.length ? riskDoc : base.risks;
+        const tips = guideDoc.length ? guideDoc : base.tips;
+
+        box.innerHTML = `
+          <p class="result-section-title">人格画像</p>
+          <p>${deep || base.profile}</p>
+          <p class="result-section-title">关系表现</p>
+          <p>${love || base.love}</p>
+          <p class="result-section-title">优势</p>
+          <ul class="analysis-list">${pros.map(x => `<li>${x}</li>`).join('')}</ul>
+          <p class="result-section-title">风险</p>
+          <ul class="analysis-list">${risks.map(x => `<li>${x}</li>`).join('')}</ul>
+          <p class="result-section-title">建议</p>
+          <ul class="analysis-list">${tips.map(x => `<li>${x}</li>`).join('')}</ul>
+          <p><span class="tag pro">适配：${(fitDoc.length ? fitDoc.slice(0, 2) : base.best).join(' / ')}</span><span class="tag con">避雷：${base.worst.join(' / ')}</span></p>
+        `;
+      } catch (e) {
+        box.innerHTML = `
+          <p class="result-section-title">人格画像</p>
+          <p>${base.profile}</p>
+          <p class="result-section-title">关系表现</p>
+          <p>${base.love}</p>
+          <p class="muted">详解加载异常：${e.message}</p>
+        `;
+      }
+    }
+
+    function renderResult(data) {
+      const d = data.data;
+      const grade = (d.grade || 'C').toLowerCase();
+      const pill = document.getElementById('gradePill');
+      pill.className = `pill grade-${grade}`;
+      pill.textContent = d.grade || '-';
+      document.getElementById('resultType').textContent = d.person_type || '-';
+      document.getElementById('resultDesc').textContent = d.short_desc || '已生成结果';
+
+      const tags = d.tags || [];
+      document.getElementById('tags').innerHTML = tags.map(t => `<span class="tag pro">${t}</span>`).join('') || '<span class="muted">暂无标签</span>';
+
+      const dimsBox = document.getElementById('dimsBox');
+      const dims = d.dims || {};
+      dimsBox.innerHTML = Object.keys(dims).map(k => {
+        const v = Number(dims[k]) || 0;
+        const width = Math.max(0, Math.min(100, (v / 15) * 100));
+        const lv = toLevel(v);
+        const meta = DIMENSION_META[k] || { name: k, high: '', mid: '', low: '' };
+        const text = lv === 'H' ? meta.high : lv === 'M' ? meta.mid : meta.low;
+        return `
+          <div class="dim-item">
+            <div class="dim-head"><span><b>${meta.name}</b>（${k}）</span><span class="badge">${lv} · ${v}/15</span></div>
+            <div class="progress"><div style="width:${width}%;"></div></div>
+            <p class="muted" style="margin:8px 0 0;">${text}</p>
+          </div>
+        `;
+      }).join('');
+
+      renderMergedPersonalityDetail(d.person_type);
+    }
+
+    function toMatch() {
+      goTo('match');
+      const myType = latestResult?.data?.person_type || '--';
+      document.getElementById('matchTypeA').textContent = myType;
+      document.getElementById('matchAIdText').textContent = '已自动填入本次测试结果';
+      document.getElementById('matchTypeB').textContent = '请选择 Ta 的人格类型';
+      populatePartnerSelect();
+      document.getElementById('matchSummary').innerHTML = '';
+      document.getElementById('matchStatus').textContent = '请先选择 Ta 的人格类型，再开始匹配。';
+    }
+
+    function populatePartnerSelect() {
+      const select = document.getElementById('matchPartnerType');
+      const myType = String(latestResult?.data?.person_type || '');
+      const candidates = PERSON_TYPES.filter(t => t !== myType);
+
+      let html = '<option value=\"\">请选择 Ta 的人格类型</option>';
+      html += candidates.map(type => `<option value=\"${type}\">${type}</option>`).join('');
+      select.innerHTML = html;
+
+      if (candidates.length === 0) {
+        document.getElementById('matchStatus').textContent = '暂时没有可选人格类型，请刷新后重试。';
+      }
+    }
+
+    function onPartnerSelected() {
+      const v = document.getElementById('matchPartnerType').value;
+      document.getElementById('matchTypeB').textContent = v ? `已选择：${v}` : '请选择 Ta 的人格类型';
+    }
+
+    function buildTypePrototypeDims(type) {
+      const base = (type || '').split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+      const dimOrder = ['S','E','A','R','C','F','M','L','X','D'];
+      const dims = {};
+      dimOrder.forEach((dim, idx) => {
+        dims[dim] = 5 + ((base + idx * 11) % 11);
+      });
+      return dims;
+    }
+
+    function calcBaseScore(dimsA, dimsB) {
+      const dimOrder = ['S','E','A','R','C','F','M','L','X','D'];
+      let sum = 0;
+      let maxSum = 0;
+      dimOrder.forEach((dim) => {
+        const a = Number(dimsA?.[dim] ?? 10);
+        const b = Number(dimsB?.[dim] ?? 10);
+        const sim = Math.max(0, 10 - Math.abs(a - b));
+        const w = MATCH_WEIGHTS[dim] ?? 1;
+        sum += sim * w;
+        maxSum += 10 * w;
+      });
+      return Math.round((sum / maxSum) * 100);
+    }
+
+    function applyChem(base, typeA, typeB) {
+      let score = base;
+      CHEMISTRY_RULES.forEach(([a, b, delta]) => {
+        const direct = a === typeA && (b === typeB || b === 'ANY');
+        const reverse = a === typeB && (b === typeA || b === 'ANY');
+        if (direct || reverse) score += delta;
+      });
+      return Math.max(0, Math.min(100, score));
+    }
+
+    function describeMatch(score) {
+      if (score >= 90) return { match_type: '灵魂伴侣', type_description: '你们属于天选组合' };
+      if (score >= 75) return { match_type: '高质量恋爱', type_description: '只要经营，基本稳' };
+      if (score >= 60) return { match_type: '可发展关系', type_description: '有吸引，也有摩擦' };
+      if (score >= 40) return { match_type: '高磨合关系', type_description: '需要大量沟通' };
+      return { match_type: '不建议', type_description: '容易消耗甚至伤害' };
+    }
+
+    function buildAnalysisByDims(a, b) {
+      const dimOrder = ['S','E','A','R','C','F','M','L','X','D'];
+      const sorted = dimOrder
+        .map(dim => ({ dim, gap: Math.abs((Number(a?.[dim]) || 10) - (Number(b?.[dim]) || 10)) }))
+        .sort((x, y) => y.gap - x.gap);
+      const high = sorted.slice(0, 2);
+      const low = [...sorted].reverse().slice(0, 2);
+      return {
+        pros: [
+          `你们在 ${low[0].dim} 维度差距较小，互动节奏更容易同步`,
+          `你们在 ${low[1].dim} 维度更接近，冲突成本相对较低`
+        ],
+        risks: [
+          `${high[0].dim} 维度差异较大，容易在该议题上拉扯`,
+          `${high[1].dim} 维度差异明显，建议先对齐边界和预期`
+        ],
+        suggestions: [
+          `围绕 ${high[0].dim}/${high[1].dim} 建立固定沟通机制`,
+          '先确认彼此底线，再讨论改进方式，避免情绪化升级'
+        ]
+      };
+    }
+
+    function renderMatchResult(data, extraNote = '') {
+      const score = data.score;
+      const color = score >= 75 ? 'var(--ok)' : score >= 60 ? 'var(--warn)' : 'var(--bad)';
+      document.getElementById('matchStatus').innerHTML = `匹配度 <b style="color:${color}">${score}</b> · ${data.match_type}${extraNote ? ` · <span class="muted">${extraNote}</span>` : ''}`;
+      document.getElementById('matchTypeA').textContent = data.type_a || '--';
+      document.getElementById('matchTypeB').textContent = data.type_b || '--';
+      const analysis = data.analysis || { pros: [], risks: [], suggestions: [] };
+      document.getElementById('matchSummary').innerHTML = `
+        <div class="card" style="padding:16px; margin-top:10px;">
+          <p><b>关系判断：</b>${data.type_description}</p>
+          <p><b>优势：</b></p>
+          <ul class="analysis-list">${(analysis.pros || []).map(x => `<li>${x}</li>`).join('')}</ul>
+          <p><b>风险：</b></p>
+          <ul class="analysis-list">${(analysis.risks || []).map(x => `<li>${x}</li>`).join('')}</ul>
+          <p><b>建议：</b></p>
+          <ul class="analysis-list">${(analysis.suggestions || []).map(x => `<li>${x}</li>`).join('')}</ul>
+        </div>
+      `;
+    }
+
+    async function calculateMatch() {
+      const typeA = String(latestResult?.data?.person_type || '');
+      if (!typeA) {
+        document.getElementById('matchStatus').textContent = '请先完成测试，再进行匹配。';
+        goTo('quiz');
+        return;
+      }
+      const typeB = document.getElementById('matchPartnerType').value;
+      if (!typeB) {
+        document.getElementById('matchStatus').textContent = '请先从下拉框选择 Ta 的人格类型。';
+        return;
+      }
+
+      document.getElementById('matchStatus').textContent = '匹配计算中...';
+      try {
+        const res = await fetch('/api/v1/match/compatibility', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type_a: typeA,
+            type_b: typeB,
+            dims_a: latestResult?.data?.dims || null
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status !== 404) {
+            document.getElementById('matchStatus').textContent = `失败：${data.message || res.status}。请确认人格类型选择是否正确。`;
+            document.getElementById('matchSummary').innerHTML = `<p class="muted">请检查你和 Ta 的人格类型后重试。</p>`;
+            return;
+          }
+        }
+        if (res.ok && data?.data) {
+          renderMatchResult(data.data);
+          return;
+        }
+
+        const dimsA = latestResult?.data?.dims || {};
+        const dimsB = buildTypePrototypeDims(typeB);
+        const base = calcBaseScore(dimsA, dimsB);
+        const score = applyChem(base, typeA, typeB);
+        const desc = describeMatch(score);
+        renderMatchResult({
+          score,
+          match_type: desc.match_type,
+          type_description: desc.type_description,
+          analysis: buildAnalysisByDims(dimsA, dimsB),
+          type_a: typeA,
+          type_b: typeB
+        }, '本地计算');
+      } catch (e) {
+        const dimsA = latestResult?.data?.dims || {};
+        const dimsB = buildTypePrototypeDims(typeB);
+        const base = calcBaseScore(dimsA, dimsB);
+        const score = applyChem(base, typeA, typeB);
+        const desc = describeMatch(score);
+        renderMatchResult({
+          score,
+          match_type: desc.match_type,
+          type_description: desc.type_description,
+          analysis: buildAnalysisByDims(dimsA, dimsB),
+          type_a: typeA,
+          type_b: typeB
+        }, '本地计算');
+      }
+    }
+
+    function renderPoster() {
+      const box = document.getElementById('poster');
+      if (!latestResult?.data) {
+        box.innerHTML = '<p class="muted">先完成一次测试，这里会生成分享内容。</p>';
+        return;
+      }
+      const d = latestResult.data;
+      box.innerHTML = `
+        <h3 style="margin:0 0 8px;">🏆 ${d.person_type}</h3>
+        <p style="margin:0 0 8px;">等级 ${d.grade} · ${d.short_desc || ''}</p>
+        <p class="muted" style="margin:0;">恋爱人格结果卡 · HeartType</p>
+      `;
+    }
+
+    async function copyShareText() {
+      if (!latestResult?.data) {
+        document.getElementById('shareStatus').textContent = '请先完成测试再复制分享文案。';
+        return;
+      }
+      const d = latestResult.data;
+      const text = `我在 HeartType 测出了 ${d.person_type}（${d.grade}级）：${d.short_desc || ''}`;
+      try {
+        await navigator.clipboard.writeText(text);
+        document.getElementById('shareStatus').textContent = '分享文案已复制。';
+      } catch {
+        document.getElementById('shareStatus').textContent = `复制失败，请手动复制：${text}`;
+      }
+    }
+
+    initNav();
+    renderRank();
+    renderQuiz();
+  </script>
+</body>
+</html>
